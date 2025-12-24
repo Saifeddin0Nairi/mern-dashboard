@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+.app-container {
+  padding: 1rem;
+}
+nav {
+  margin-bottom: 1rem;
+}
+nav a {
+  margin-right: 1rem;
+  text-decoration: none;
+  color: #0366d6;
+}
+nav a:hover {
+  text-decoration: underline;
+}
+button {
+  cursor: pointer;
+}
+.form-field {
+  margin-bottom: 0.75rem;
+}
+.form-field label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+.form-field input,
+.form-field select,
+.form-field textarea {
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
+}
+.error {
+  color: red;
+  margin-bottom: 1rem;
+}
+.item-card {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-radius: 4px;
+}
+.item-card h3 {
+  margin: 0 0 0.25rem 0;
+}
+.item-card p {
+  margin: 0.25rem 0;
+}
+.item-actions {
+  margin-top: 0.5rem;
+}
+.item-actions button {
+  margin-right: 0.5rem;
+}
+.filter-bar {
+  margin-bottom: 1rem;
+}
