@@ -7,6 +7,12 @@ const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const healthRoutes = require('./routes/healthRoutes');
+
+
+const workoutRoutes = require('./routes/workoutRoutes');
+const exerciseRoutes = require('./routes/exerciseRoutes');
+const performanceRoutes = require('./routes/performanceRoutes');
+
 const { errorHandler } = require("./ApiGuards");
 
 // Initialize Express app
@@ -25,6 +31,10 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/health', healthRoutes);
 
+
+app.use('/api/workouts', workoutRoutes);
+app.use('/api/exercises', exerciseRoutes);
+app.use('/api/performance', performanceRoutes);
 // Global error handler
 app.use(errorHandler);
 

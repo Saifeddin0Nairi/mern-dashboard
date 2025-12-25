@@ -1,6 +1,14 @@
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-const User = require("./models/User");
+
+let User;
+try {
+  // If ApiGuards.js is in project root
+  User = require("./models/User");
+} catch (e) {
+  // If ApiGuards.js is in /middleware
+  User = require("../models/User");
+}
 
 /**
  * Wrap async controllers so errors go to the global error handler
@@ -26,6 +34,7 @@ const validateRequest = (req, res, next) => {
 
 /**
  * Auth guard: requires Authorization: Bearer <token>
+ * (KEEP SAME BEHAVIOR)
  */
 const auth = async (req, res, next) => {
   const authHeader = req.headers["authorization"] || req.headers["Authorization"];
@@ -48,6 +57,7 @@ const auth = async (req, res, next) => {
       return next(err);
     }
 
+    // KEEP: attach the full user doc
     req.user = user;
     return next();
   } catch (e) {
@@ -58,7 +68,28 @@ const auth = async (req, res, next) => {
 };
 
 /**
- * Central error handler (consistent JSON)
+ * Helper: always get the authenticated userId consistently
+ * Supports: req.user, req.user.id, req.user._id, req.userId
+ */
+const getUserId = (req) => {
+  if (req.user && (req.user._id || req.user.id)) return (req.user._id || req.user.id).toString();
+  if (req.userId) return req.userId.toString();
+  return null;
+};
+
+/**
+ * Optional helpers for standardized success responses
+ */
+const sendSuccess = (res, data, message, statusCode = 200) => {
+  const payload = { success: true };
+  if (data !== undefined) payload.data = data;
+  if (message) payload.message = message;
+  return res.status(statusCode).json(payload);
+};
+
+/**
+ * Central error handler (STANDARDIZED JSON)
+ * { success:false, error: string | string[] }
  */
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack || err);
@@ -80,12 +111,14 @@ const errorHandler = (err, req, res, next) => {
 
   const status = err.statusCode || 500;
 
-  // express-validator style
+  // express-validator style aggregated messages
   if (err.errors && Array.isArray(err.errors)) {
-    return res.status(status).json({ errors: err.errors });
+    return res.status(status).json({ success: false, error: err.errors });
   }
 
-  return res.status(status).json({ error: err.message || "Internal Server Error" });
+  return res
+    .status(status)
+    .json({ success: false, error: err.message || "Internal Server Error" });
 };
 
 module.exports = {
@@ -93,4 +126,6 @@ module.exports = {
   validateRequest,
   auth,
   errorHandler,
+  getUserId,
+  sendSuccess,
 };
